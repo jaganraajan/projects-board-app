@@ -1,50 +1,180 @@
-# Welcome to your Expo app 👋
+# Projects Board App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A mobile-optimized Kanban-style project management board built with Expo React Native, designed to work with the Rails backend at [@jaganraajan/projects-board-tenant-server](https://github.com/jaganraajan/projects-board-tenant-server).
 
-## Get started
+## Features
 
-1. Install dependencies
+- **Mobile-Optimized Kanban Board**: Touch-friendly task management with three columns (To Do, In Progress, Done)
+- **JWT Authentication**: Secure login/register with multi-tenant support
+- **Task Management**: Create, edit, delete, and move tasks between columns
+- **iOS Design Language**: Native iOS styling with rounded corners, shadows, and smooth animations
+- **Offline-Ready**: AsyncStorage for token persistence
+- **Priority & Due Dates**: Task priority levels and due date management
+- **Company Branding**: Multi-tenant support with company-specific data
 
+## Backend Integration
+
+This app connects to the Ruby on Rails backend:
+- **Repository**: [@jaganraajan/projects-board-tenant-server](https://github.com/jaganraajan/projects-board-tenant-server)
+- **API Documentation**: See the backend's `API_DOCUMENTATION.md` for endpoint details
+- **Authentication**: JWT tokens with multi-tenant support via email parameter
+
+## Prerequisites
+
+- Node.js 18+ 
+- npm or yarn
+- Expo CLI (`npm install -g @expo/cli`)
+- iOS Simulator (for iOS development) or Android Emulator (for Android)
+- Rails backend server running (see backend repository)
+
+## Setup
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/jaganraajan/projects-board-app.git
+   cd projects-board-app
+   ```
+
+2. **Install dependencies**
    ```bash
    npm install
    ```
 
-2. Start the app
-
-   ```bash
-   npx expo start
+3. **Configure API endpoint**
+   
+   Update the API configuration in `constants/Config.ts`:
+   ```typescript
+   export const API_CONFIG = {
+     BASE_URL: __DEV__ 
+       ? 'http://localhost:3000' // Your local Rails server
+       : 'https://your-production-server.com', // Your production URL
+   };
    ```
 
-In the output, you'll find options to open the app in a
+4. **Start the development server**
+   ```bash
+   npm start
+   ```
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+5. **Run on device/simulator**
+   - Press `i` for iOS simulator
+   - Press `a` for Android emulator
+   - Scan QR code with Expo Go app for physical device
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Project Structure
 
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```
+├── app/                    # App screens (file-based routing)
+│   ├── (tabs)/            # Tab navigation screens
+│   │   ├── index.tsx      # Home/Welcome screen
+│   │   ├── board.tsx      # Main Kanban board
+│   │   └── explore.tsx    # Profile/Settings screen
+│   ├── auth/              # Authentication screens
+│   │   ├── login.tsx      # Login screen
+│   │   └── register.tsx   # Registration screen
+│   └── _layout.tsx        # Root layout with AuthProvider
+├── components/            # Reusable components
+│   ├── kanban/           # Kanban board components
+│   │   ├── KanbanBoard.tsx    # Main board container
+│   │   ├── KanbanColumn.tsx   # Individual columns
+│   │   ├── TaskCard.tsx       # Task cards
+│   │   ├── TaskEditModal.tsx  # Edit task modal
+│   │   └── AddTaskModal.tsx   # Add task modal
+│   └── ui/               # UI components
+├── context/              # React Context providers
+│   └── AuthContext.tsx   # Authentication & task management
+├── lib/                  # Utilities and services
+│   └── api/              # API client and types
+│       └── client.ts     # HTTP client for Rails backend
+├── constants/            # App constants
+│   └── Config.ts         # API configuration and constants
+└── assets/              # Static assets
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## API Configuration
 
-## Learn more
+The app is configured to work with the Rails backend API. Key configuration options:
 
-To learn more about developing your project with Expo, look at the following resources:
+### Development
+- Default: `http://localhost:3000` (Rails server)
+- Ensure your Rails server is running on port 3000
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### Production
+- Update `BASE_URL` in `constants/Config.ts` with your production URL
+- Ensure CORS is configured in your Rails app for your app's domain
 
-## Join the community
+### Authentication
+- Uses JWT tokens stored in AsyncStorage
+- Multi-tenant support via email parameter
+- Automatic token refresh and error handling
 
-Join our community of developers creating universal apps.
+## Usage
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+### Authentication
+1. **Register**: Create account with email, password, and company name
+2. **Login**: Sign in with existing credentials
+3. **Logout**: Sign out from the Profile screen
+
+### Task Management
+1. **View Board**: Navigate to Board tab to see your Kanban board
+2. **Add Tasks**: Tap the "+" button in any column to create a new task
+3. **Edit Tasks**: Tap the pencil icon on any task card to edit
+4. **Move Tasks**: Tap a task card and select which column to move it to
+5. **Delete Tasks**: Tap the trash icon on any task card to delete
+
+### Features
+- **Priority Levels**: Critical, High, Medium, Low
+- **Due Dates**: Set and modify due dates for tasks
+- **Company Data**: Multi-tenant data isolation by company
+- **Offline Support**: App works offline, syncs when reconnected
+
+## Mobile Optimizations
+
+- **Touch-First Design**: Large touch targets and gesture-friendly interactions
+- **iOS Design Language**: Native iOS styling with proper spacing and typography
+- **Tab Navigation**: Bottom tab navigation following iOS conventions
+- **Modal Presentations**: iOS-style modals for forms and detailed views
+- **Responsive Layout**: Adapts to different screen sizes
+- **Performance**: Optimized scrolling and rendering for smooth experience
+
+## Scripts
+
+- `npm start` - Start Expo development server
+- `npm run android` - Run on Android emulator
+- `npm run ios` - Run on iOS simulator
+- `npm run web` - Run on web (limited functionality)
+- `npm run lint` - Run ESLint
+
+## Architecture
+
+### State Management
+- **React Context**: Used for authentication and global task state
+- **AsyncStorage**: Persistent storage for tokens and offline data
+- **Effect Management**: Proper cleanup and dependency handling
+
+### API Integration
+- **Axios**: HTTP client with interceptors and error handling
+- **TypeScript**: Full type safety for API requests and responses
+- **Error Boundaries**: Graceful error handling throughout the app
+
+### Navigation
+- **Expo Router**: File-based routing with TypeScript support
+- **Tab Navigation**: iOS-style bottom tabs
+- **Modal Stack**: Proper modal presentation for forms
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## Related Projects
+
+- **Backend API**: [@jaganraajan/projects-board-tenant-server](https://github.com/jaganraajan/projects-board-tenant-server)
+- **Web Frontend**: [@jaganraajan/projects-board](https://github.com/jaganraajan/projects-board)
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
