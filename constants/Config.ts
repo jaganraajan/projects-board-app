@@ -1,9 +1,7 @@
 // API Configuration
 export const API_CONFIG = {
   // Base URL for the Rails backend
-  BASE_URL: __DEV__ 
-    ? 'http://localhost:3000' // Development - Rails server running locally
-    : 'https://your-production-server.com', // Production URL (to be configured)
+  BASE_URL: 'https://projects-board-tenant-server.onrender.com', // Production URL
   
   // Default headers
   DEFAULT_HEADERS: {

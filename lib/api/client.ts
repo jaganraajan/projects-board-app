@@ -72,6 +72,8 @@ const getAuthHeaders = (token: string, email: string) => ({
 export const authAPI = {
   async login(email: string, password: string): Promise<AuthResponse> {
     try {
+      console.log('api base URL:', api.defaults.baseURL);
+
       const response: AxiosResponse<AuthResponse> = await api.post('/login', {
         email,
         password,
