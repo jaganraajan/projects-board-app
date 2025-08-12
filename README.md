@@ -2,6 +2,17 @@
 
 A mobile-optimized Kanban-style project management board built with Expo React Native, designed to work with the Rails backend at [@jaganraajan/projects-board-tenant-server](https://github.com/jaganraajan/projects-board-tenant-server).
 
+## Demo 
+<table>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/f7f941ff-c043-4812-b77f-f58d93c7ccec" width="150"/></td>
+    <td><img src="https://github.com/user-attachments/assets/dd2061cc-0c48-46e0-9103-33435664c6f4" width="150"/></td>
+    <td><img src="https://github.com/user-attachments/assets/98eecb59-2b78-48df-9f59-8078868b22ba" width="150"/></td>
+    <td><img src="https://github.com/user-attachments/assets/77e7402e-539f-4c9b-a7fe-933c142aee81" width="150"/></td>
+    <td><img src="https://github.com/user-attachments/assets/83e3ad82-1dee-4fc9-886f-a9d66aa6d12b" width="150"/></td>
+  </tr>
+</table>
+
 ## Features
 
 - **Mobile-Optimized Kanban Board**: Touch-friendly task management with three columns (To Do, In Progress, Done)
