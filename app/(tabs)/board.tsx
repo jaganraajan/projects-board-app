@@ -1,28 +1,25 @@
-import React, { useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, StyleSheet, ActivityIndicator, SafeAreaView } from 'react-native';
 import { router } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
 import KanbanBoard from '@/components/kanban/KanbanBoard';
 
 export default function BoardScreen() {
   const { isAuthenticated, isLoading } = useAuth();
+  const hasRedirected = useRef(false);
 
   useEffect(() => {
     // Redirect to login if not authenticated and not loading
     if (!isLoading && !isAuthenticated) {
+      hasRedirected.current = true;
       router.replace('/auth/login');
     }
-  }, [isAuthenticated, isLoading]);
-
-  // Don't render anything while loading or if not authenticated
-  if (isLoading || !isAuthenticated) {
-    return <View style={styles.container} />;
-  }
+  }, [isLoading]);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <KanbanBoard />
-    </View>
+    </SafeAreaView>
   );
 }
 
