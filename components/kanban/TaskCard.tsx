@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
-  Dimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Task, TaskPriority } from '@/lib/api/client';
@@ -19,9 +18,6 @@ interface TaskCardProps {
   onMove: (taskId: string, currentStatus: string) => void;
   isLoading: boolean;
 }
-
-const { width } = Dimensions.get('window');
-const cardWidth = (width - 60) / 3 - 10; // Account for padding and gaps
 
 export default function TaskCard({ task, onEdit, onDelete, onMove, isLoading }: TaskCardProps) {
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
@@ -97,7 +93,7 @@ export default function TaskCard({ task, onEdit, onDelete, onMove, isLoading }: 
   return (
     <>
       <TouchableOpacity
-        style={[styles.card, { width: cardWidth }]}
+        style={styles.card}
         onPress={handleMove}
         disabled={isLoading}
         activeOpacity={0.7}
@@ -171,16 +167,18 @@ export default function TaskCard({ task, onEdit, onDelete, onMove, isLoading }: 
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    marginBottom: 12,
+    borderRadius: 16,
+    marginRight: 16,
+    width: 220,
+    minHeight: 140,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 3,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowOpacity: 0.12,
+    shadowRadius: 5,
+    elevation: 6,
     overflow: 'hidden',
   },
   priorityIndicator: {
@@ -195,23 +193,27 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   actionButton: {
-    padding: 4,
+    padding: 6,
+    borderRadius: 8,
+    backgroundColor: '#F3F4F6',
   },
   cardContent: {
     paddingHorizontal: 12,
     paddingVertical: 8,
+    flex: 1,
   },
   taskTitle: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '600',
     color: '#1F2937',
-    marginBottom: 4,
-    lineHeight: 18,
+    marginBottom: 6,
+    lineHeight: 20,
   },
   taskDescription: {
-    fontSize: 12,
+    fontSize: 14,
     color: '#6B7280',
-    lineHeight: 16,
+    lineHeight: 18,
+    flex: 1,
   },
   cardFooter: {
     flexDirection: 'row',
@@ -222,17 +224,17 @@ const styles = StyleSheet.create({
   },
   priorityBadge: {
     backgroundColor: '#F3F4F6',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
   },
   priorityText: {
-    fontSize: 10,
-    fontWeight: '500',
+    fontSize: 12,
+    fontWeight: '600',
     color: '#6B7280',
   },
   dueDateText: {
-    fontSize: 10,
+    fontSize: 12,
     color: '#6B7280',
     fontWeight: '500',
   },
