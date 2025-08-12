@@ -104,10 +104,9 @@ export default function KanbanBoard() {
 
       {/* Kanban Board */}
       <ScrollView
-        horizontal
         style={styles.boardContainer}
         contentContainerStyle={styles.boardContent}
-        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
             refreshing={isLoading}
@@ -186,6 +185,5 @@ const styles = StyleSheet.create({
   boardContent: {
     paddingHorizontal: 20,
     paddingVertical: 20,
-    minWidth: '100%',
   },
 });

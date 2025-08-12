@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  Dimensions,
   Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -23,9 +22,6 @@ interface KanbanColumnProps {
   onMoveTask: (taskId: string, fromStatus: TaskStatus, toStatus: TaskStatus) => Promise<void>;
   isLoading: boolean;
 }
-
-const { width } = Dimensions.get('window');
-const columnWidth = (width - 60) / 3; // Account for padding and gaps
 
 export default function KanbanColumn({
   status,
@@ -61,64 +57,86 @@ export default function KanbanColumn({
 
   return (
     <>
-      <View style={[styles.column, { width: columnWidth }]}>
-        {/* Column Header */}
-        <View style={[styles.header, { borderTopColor: getColumnColor() }]}>
+      <View style={styles.row}>
+        {/* Row Header */}
+        <View style={[styles.header, { borderLeftColor: getColumnColor() }]}>
           <Text style={styles.headerTitle}>{getColumnName()}</Text>
           <View style={styles.headerBadge}>
             <Text style={styles.headerBadgeText}>{tasks.length}</Text>
           </View>
         </View>
 
-        {/* Tasks List */}
-        <ScrollView 
-          style={styles.tasksList}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.tasksContent}
-        >
-          {tasks.map((task) => (
-            <TaskCard
-              key={task.id}
-              task={task}
-              onEdit={onEditTask}
-              onDelete={onDeleteTask}
-              onMove={(taskId, targetStatus) => handleMoveTask(taskId, targetStatus as TaskStatus)}
-              isLoading={isLoading}
-            />
-          ))}
-
-          {/* Empty state */}
-          {tasks.length === 0 && (
-            <View style={styles.emptyState}>
-              <Ionicons 
-                name="add-circle-outline" 
-                size={32} 
-                color="#9CA3AF" 
-                style={styles.emptyIcon}
+        {/* Tasks List - Horizontal ScrollView for mobile-friendly touch interaction */}
+        {tasks.length > 0 && (
+          <ScrollView 
+            horizontal
+            style={styles.tasksList}
+            contentContainerStyle={styles.tasksContent}
+            showsHorizontalScrollIndicator={false}
+            decelerationRate="fast"
+            snapToInterval={260} // Width of task card + margin
+            snapToAlignment="start"
+          >
+            {tasks.map((task) => (
+              <TaskCard
+                key={task.id}
+                task={task}
+                onEdit={onEditTask}
+                onDelete={onDeleteTask}
+                onMove={(taskId, targetStatus) => handleMoveTask(taskId, targetStatus as TaskStatus)}
+                isLoading={isLoading}
               />
-              <Text style={styles.emptyText}>No tasks yet</Text>
-              <Text style={styles.emptySubtext}>Tap + to add one</Text>
-            </View>
-          )}
-        </ScrollView>
+            ))}
 
-        {/* Add Task Button */}
-        <TouchableOpacity
-          style={[styles.addButton, { borderColor: getColumnColor() }]}
-          onPress={() => setIsAddModalVisible(true)}
-          disabled={isLoading}
-          activeOpacity={0.7}
-        >
-          <Ionicons 
-            name="add" 
-            size={20} 
-            color={getColumnColor()} 
-            style={styles.addIcon}
-          />
-          <Text style={[styles.addButtonText, { color: getColumnColor() }]}>
-            {isLoading ? 'Adding...' : 'Add Task'}
-          </Text>
-        </TouchableOpacity>
+            {/* Add Task Button */}
+            <TouchableOpacity
+              style={[styles.addButton, { borderColor: getColumnColor() }]}
+              onPress={() => setIsAddModalVisible(true)}
+              disabled={isLoading}
+              activeOpacity={0.7}
+            >
+              <Ionicons 
+                name="add" 
+                size={24} 
+                color={getColumnColor()} 
+                style={styles.addIcon}
+              />
+              <Text style={[styles.addButtonText, { color: getColumnColor() }]}>
+                {isLoading ? 'Adding...' : 'Add Task'}
+              </Text>
+            </TouchableOpacity>
+          </ScrollView>
+        )}
+
+        {/* Empty state for when no tasks */}
+        {tasks.length === 0 && (
+          <View style={styles.emptyState}>
+            <Ionicons 
+              name="add-circle-outline" 
+              size={32} 
+              color="#9CA3AF" 
+              style={styles.emptyIcon}
+            />
+            <Text style={styles.emptyText}>No tasks yet</Text>
+            <Text style={styles.emptySubtext}>Tap + to add one</Text>
+            <TouchableOpacity
+              style={[styles.addButton, { borderColor: getColumnColor() }]}
+              onPress={() => setIsAddModalVisible(true)}
+              disabled={isLoading}
+              activeOpacity={0.7}
+            >
+              <Ionicons 
+                name="add" 
+                size={24} 
+                color={getColumnColor()} 
+                style={styles.addIcon}
+              />
+              <Text style={[styles.addButtonText, { color: getColumnColor() }]}>
+                {isLoading ? 'Adding...' : 'Add Task'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
 
       <AddTaskModal
@@ -133,35 +151,33 @@ export default function KanbanColumn({
 }
 
 const styles = StyleSheet.create({
-  column: {
+  row: {
     backgroundColor: '#F9FAFB',
     borderRadius: 16,
-    marginHorizontal: 4,
-    flex: 1,
-    maxHeight: '100%',
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    borderTopWidth: 4,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    borderLeftWidth: 4,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
     backgroundColor: '#FFFFFF',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 2,
   },
   headerTitle: {
-    fontSize: 14,
-    fontWeight: '600',
+    fontSize: 18,
+    fontWeight: '700',
     color: '#1F2937',
     flex: 1,
   },
@@ -169,60 +185,62 @@ const styles = StyleSheet.create({
     backgroundColor: '#E5E7EB',
     borderRadius: 12,
     paddingHorizontal: 8,
-    paddingVertical: 2,
-    minWidth: 24,
+    paddingVertical: 4,
+    minWidth: 28,
     alignItems: 'center',
   },
   headerBadgeText: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '600',
     color: '#6B7280',
   },
   tasksList: {
-    flex: 1,
-    paddingHorizontal: 8,
+    paddingVertical: 8,
   },
   tasksContent: {
+    paddingHorizontal: 16,
     paddingVertical: 8,
-    paddingBottom: 16,
   },
   emptyState: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 32,
+    paddingVertical: 40,
     paddingHorizontal: 16,
   },
   emptyIcon: {
     marginBottom: 8,
   },
   emptyText: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '500',
     color: '#9CA3AF',
     marginBottom: 4,
   },
   emptySubtext: {
-    fontSize: 12,
+    fontSize: 14,
     color: '#D1D5DB',
   },
   addButton: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    marginHorizontal: 8,
-    marginBottom: 8,
-    borderWidth: 1.5,
-    borderRadius: 12,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    marginLeft: 16,
+    marginRight: 16,
+    width: 220,
+    borderWidth: 2,
+    borderRadius: 16,
     borderStyle: 'dashed',
     backgroundColor: '#FFFFFF',
+    minHeight: 140,
   },
   addIcon: {
-    marginRight: 6,
+    marginBottom: 8,
   },
   addButtonText: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '600',
+    textAlign: 'center',
   },
 });
